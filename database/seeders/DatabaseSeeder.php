@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => 'password',
         ])->assignRole('admin');
-        
+
         User::factory()->create([
             'name' => 'Guru',
             'email' => 'guru@example.com',

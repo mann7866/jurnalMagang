@@ -33,7 +33,7 @@ class DetailUserRequest extends FormRequest
         return [
             'image'                 => $this->isMethod('post') ?
             ['required', 'max:2048'] :
-            ['sometimes', 'max:2048'],
+            ['nullable', 'max:2048'],
             'student_name'          => ['required', 'string', 'max:255'],
             'no_telp'               => ['required', 'min:11', 'max:12'],
             'email'                 => $this->isMethod('post')

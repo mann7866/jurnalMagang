@@ -13,27 +13,43 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Protected Route (login required)
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/profile', function (Request $request) {
         return $request->user();
     });
 
-    // teacher route
-    Route::controller(App\Http\Controllers\api\Admin\TeacherController::class)->prefix('/teacher')->name('teacher.')->group(function(){
-        Route::get('/get/data','getData')->name('get');
-        Route::post('/store','store')->name('store');
-        Route::put('/update/{id}','update')->name('update');
-        Route::delete('/destroy/{id}','destroy')->name('destroy');
+    // admin role route
+    Route::middleware('role:admin')->prefix('/administrator')->name('administrator')->group(function(){
+
+        // teacher route
+        Route::controller(App\Http\Controllers\api\Admin\TeacherController::class)->prefix('/teacher')->name('teacher.')->group(function(){
+            Route::get('/get/data','getData')->name('get');
+            Route::post('/store','store')->name('store');
+            Route::put('/update/{id}','update')->name('update');
+            Route::delete('/destroy/{id}','destroy')->name('destroy');
+        });
+
+        // student route
+        Route::controller(App\Http\Controllers\api\Admin\StudentController::class)->prefix('/student')->name('student.')->group(function(){
+            Route::get('/get/data','getData')->name('get');
+            Route::post('/store','store')->name('store');
+            Route::put('/update/{id}','update')->name('update');
+            Route::delete('/destroy/{id}','destroy')->name('destroy');
+        });
     });
 
-    // student route
-    Route::controller(App\Http\Controllers\api\Admin\StudentController::class)->prefix('/student')->name('student.')->group(function(){
-        Route::get('/get/data','getData')->name('get');
-        Route::post('/store','store')->name('store');
-        Route::put('/update/{id}','update')->name('update');
-        Route::delete('/destroy/{id}','destroy')->name('destroy');
+    // student role route
+    Route::middleware('role:student')->prefix('student')->name('student')->group(function(){
+
+        // journal route
+        Route::controller(App\Http\Controllers\api\Student\JournalController::class)->prefix('/journal')->name('journal.')->group(function(){
+            Route::get('/get/data','getData')->name('get');
+            Route::post('/store','store')->name('store');
+            Route::put('/update/{id}','update')->name('update');
+            Route::delete('/destroy/{id}','destroy')->name('destroy');
+        });
     });
 });
 

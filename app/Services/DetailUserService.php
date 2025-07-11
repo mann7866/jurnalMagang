@@ -1,10 +1,12 @@
 <?php
 namespace App\Services;
 
-use App\Enums\UploadDiskEnum;
-use App\Http\Requests\DetailUserRequest;
 use App\Traits\UploadTrait;
+use App\Enums\UploadDiskEnum;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\JournalRequest;
+use App\Http\Requests\DetailUserRequest;
 
 class DetailUserService
 {
@@ -44,9 +46,11 @@ class DetailUserService
         if(isset($validData['nisn'])){
                 $newdetail['nisn'] = $validData['nisn'];
             }
+
         if(isset($validData['nuptk'])){
                 $newdetail['nuptk'] = $validData['nuptk'];
             }
+
         if ($uploadedImage) {
             $newdetail['image'] = $uploadedImage; // biasanya nama file atau path relatif
             }
