@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
+            $table->string('title');
+            $table->text('description');
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

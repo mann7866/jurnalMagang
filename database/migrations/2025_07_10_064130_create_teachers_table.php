@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('image');
             $table->string('no_telp');
             $table->string('address');
+            $table->date('date_of_birth');
+            $table->string('nuptk');
+            $table->enum('gender',['man','woman']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

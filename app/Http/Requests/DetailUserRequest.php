@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Requests;
 
+use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Student;
 
 class DetailUserRequest extends FormRequest
 {
@@ -32,16 +31,20 @@ class DetailUserRequest extends FormRequest
         $userId = $this->input('user_id');
 
         return [
-            'image' => $this->isMethod('post') ?
+            'image'                 => $this->isMethod('post') ?
             ['required', 'max:2048'] :
             ['sometimes', 'max:2048'],
-            'student_name' => ['required', 'string', 'max:255'],
-            'no_telp' => ['required', 'min:11', 'max:12'],
-            'email' => $this->isMethod('post')
-                ? ['required', 'email', 'unique:users,email']
-                : ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
-            'address' => ['required', 'string'],
-            'password' => ['sometimes', 'required', 'min:6', 'confirmed'],
+            'student_name'          => ['required', 'string', 'max:255'],
+            'no_telp'               => ['required', 'min:11', 'max:12'],
+            'email'                 => $this->isMethod('post')
+            ? ['required', 'email', 'unique:users,email']
+            : ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'address'               => ['required', 'string'],
+            'nisn'                  => ['sometimes', 'required', 'string'],
+            'nuptk'                 => ['sometimes', 'required', 'string'],
+            'date_of_birth'          => ['required'],
+            'gender'                 => ['required'],
+            'password'              => ['sometimes', 'required', 'min:6', 'confirmed'],
             'password_confirmation' => ['sometimes', 'required', 'same:password'],
         ];
     }
@@ -60,6 +63,16 @@ class DetailUserRequest extends FormRequest
             'address.required'               => 'Alamat tidak boleh kosong',
             'address.string'                 => 'Alamat harus berupa teks',
 
+            'nisn.required'                  => 'Nisn tidak boleh kosong',
+            'nisn.string'                    => 'Nisn harus berupa teks',
+
+            'nuptk.required'                 => 'Nuptk tidak boleh kosong',
+            'nuptk.string'                   => 'Nuptk harus berupa teks',
+
+            'date_of_birth.required'                 => 'Tanggal lahir tidak boleh kosong',
+
+            'gender.required'                 => 'Gender tidak boleh kosong',
+
             'password.required'              => 'Password tidak boleh kosong',
             'password.min'                   => 'Password minimal 6 karakter',
             'password.confirmed'             => 'Konfirmasi password tidak cocok',
@@ -67,8 +80,8 @@ class DetailUserRequest extends FormRequest
             'password_confirmation.required' => 'Konfirmasi password wajib diisi',
             'password_confirmation.same'     => 'Konfirmasi password tidak sama dengan password',
 
-            'image.required'        => 'Foto wajib diunggah.',
-            'image.max'             => 'Ukuran foto maksimal 2MB.',
+            'image.required'                 => 'Foto wajib diunggah.',
+            'image.max'                      => 'Ukuran foto maksimal 2MB.',
         ];
     }
 }
