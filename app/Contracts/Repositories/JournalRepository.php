@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Contracts\Repositories;
 
 use App\Contracts\Interfaces\JournalInterface;
@@ -7,12 +6,12 @@ use App\Models\Journal;
 
 class JournalRepository extends BaseRepository implements JournalInterface
 {
-     public function __construct(Journal $journal)
+    public function __construct(Journal $journal)
     {
         $this->model = $journal;
     }
 
-     public function get(): mixed
+    public function get(): mixed
     {
         return $this->model->query()->get();
     }
@@ -48,4 +47,8 @@ class JournalRepository extends BaseRepository implements JournalInterface
         return $this->model->query()->findOrFail($id)->delete($id);
     }
 
+    public function find(mixed $id): mixed
+    {
+        return $this->model->query()->findOrFail($id);
+    }
 }

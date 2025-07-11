@@ -54,7 +54,7 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status'   => false,
-                'messages' => 'failed to add data',
+                'messages' => 'failed to store data',
                 'data'     => $e->getMessage(),
             ], 422);
         }
