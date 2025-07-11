@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\Interfaces\JournalInterface;
 use App\Contracts\Interfaces\StudentInterface;
 use App\Contracts\Interfaces\TeacherInterface;
+use App\Contracts\Repositories\JournalRepository;
 use App\Contracts\Repositories\StudentRepository;
 use App\Contracts\Repositories\TeacherRepository;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(StudentInterface::class, StudentRepository::class);
         $this->app->bind(TeacherInterface::class, TeacherRepository::class);
+        $this->app->bind(JournalInterface::class, JournalRepository::class);
     }
 
     /**

@@ -14,6 +14,7 @@ class DetailUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'image'      => $this->image,
             'student_name' => optional($this->user)->name,
             'no_telp'      => $this->no_telp,
             'address'       => $this->address,

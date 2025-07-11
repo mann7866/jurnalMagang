@@ -32,6 +32,9 @@ class DetailUserRequest extends FormRequest
         $userId = $this->input('user_id');
 
         return [
+            'image' => $this->isMethod('post') ?
+            ['required', 'max:2048'] :
+            ['sometimes', 'max:2048'],
             'student_name' => ['required', 'string', 'max:255'],
             'no_telp' => ['required', 'min:11', 'max:12'],
             'email' => $this->isMethod('post')
@@ -63,6 +66,9 @@ class DetailUserRequest extends FormRequest
 
             'password_confirmation.required' => 'Konfirmasi password wajib diisi',
             'password_confirmation.same'     => 'Konfirmasi password tidak sama dengan password',
+
+            'image.required'        => 'Foto wajib diunggah.',
+            'image.max'             => 'Ukuran foto maksimal 2MB.',
         ];
     }
 }

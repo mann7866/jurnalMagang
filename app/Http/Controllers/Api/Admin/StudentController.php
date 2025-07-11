@@ -70,7 +70,7 @@ class StudentController extends Controller
                     'messages' => 'Student not found',
                 ], 404);
             }
-            $data = $this->detailUserService->prepareData($request);
+            $data = $this->detailUserService->prepareData($request, $student);
             $student->user->update([
                 'name'  => $data['user']['name'],
                 'email' => $data['user']['email'],
