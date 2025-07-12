@@ -42,16 +42,19 @@ class JournalService
      public function update(JournalRequest $request, $oldData = null){
         $validData = $request->validated();
         // $userId = Auth::id();
-        $uploadedImage = 'file_not_found';
-        if($request->hasFile('image')) {
-              if ($oldData != null && $oldData->image) {
+          $uploadedImage = $oldData->image ?? null;
+
+        if ($request->hasFile('image')) {
+            $newImage = $this->upload(
+                disk: UploadDiskEnum::IMAGETEACHER->value,
+                file: $validData['image']
+            );
+
+            if ($oldData != null && $oldData->image) {
                 $this->remove($oldData->image);
             }
 
-            $uploadedImage = $this->upload(
-                UploadDiskEnum::IMAGEJOURNAL->value,
-                file: $validData['image']
-            );
+            $uploadedImage = $newImage;
         }
 
         $fixDataJournal = [

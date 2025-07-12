@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // student role route
     Route::middleware('role:student')->prefix('student')->name('student')->group(function(){
 
+        // journal route
         Route::controller(App\Http\Controllers\api\Student\JournalController::class)->prefix('/journal')->name('journal.')->group(function(){
             Route::get('/get/data','getData')->name('get');
             Route::post('/store','store')->name('store');

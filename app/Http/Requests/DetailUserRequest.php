@@ -1,9 +1,11 @@
 <?php
 namespace App\Http\Requests;
 
+use App\Enums\GenderEnum;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class DetailUserRequest extends FormRequest
 {
@@ -31,19 +33,19 @@ class DetailUserRequest extends FormRequest
         $userId = $this->input('user_id');
 
         return [
-            'image'                 => $this->isMethod('post') ?
-            ['required', 'max:2048'] :
-            ['nullable', 'max:2048'],
+            'image'                 => $this->isMethod('post')
+            ? ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+            : ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'student_name'          => ['required', 'string', 'max:255'],
             'no_telp'               => ['required', 'min:11', 'max:12'],
             'email'                 => $this->isMethod('post')
             ? ['required', 'email', 'unique:users,email']
             : ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'address'               => ['required', 'string'],
-            'nisn'                  => ['sometimes', 'required', 'string'],
-            'nuptk'                 => ['sometimes', 'required', 'string'],
-            'date_of_birth'          => ['required'],
-            'gender'                 => ['required'],
+            'nisn'                  => ['sometimes', 'required', 'string', 'digits:10'],
+            'nuptk'                 => ['sometimes', 'required', 'string', 'digits:16'],
+            'date_of_birth'         => ['required', 'date', 'before:today'],
+            'gender'                => ['required', new Enum(GenderEnum::class)],
             'password'              => ['sometimes', 'required', 'min:6', 'confirmed'],
             'password_confirmation' => ['sometimes', 'required', 'same:password'],
         ];
@@ -63,15 +65,20 @@ class DetailUserRequest extends FormRequest
             'address.required'               => 'Alamat tidak boleh kosong',
             'address.string'                 => 'Alamat harus berupa teks',
 
-            'nisn.required'                  => 'Nisn tidak boleh kosong',
-            'nisn.string'                    => 'Nisn harus berupa teks',
+            'nisn.required'                  => 'NISN wajib diisi.',
+            'nisn.string'                    => 'NISN harus berupa teks.',
+            'nisn.digits'                    => 'NISN harus terdiri dari 10 digit angka.',
 
-            'nuptk.required'                 => 'Nuptk tidak boleh kosong',
-            'nuptk.string'                   => 'Nuptk harus berupa teks',
+            'nuptk.required'                 => 'NUPTK wajib diisi.',
+            'nuptk.string'                   => 'NUPTK harus berupa teks.',
+            'nuptk.digits'                   => 'NUPTK harus terdiri dari 16 digit angka.',
 
-            'date_of_birth.required'                 => 'Tanggal lahir tidak boleh kosong',
+            'date_of_birth.required'         => 'Tanggal lahir wajib diisi.',
+            'date_of_birth.date'             => 'Tanggal lahir harus berupa format tanggal yang valid.',
+            'date_of_birth.before'           => 'Tanggal lahir harus sebelum hari ini.',
 
-            'gender.required'                 => 'Gender tidak boleh kosong',
+            'gender.required'                => 'Gender tidak boleh kosong',
+            'gender.enum'                    => 'Gender harus salah satu dari: man atau woman.',
 
             'password.required'              => 'Password tidak boleh kosong',
             'password.min'                   => 'Password minimal 6 karakter',
@@ -80,8 +87,11 @@ class DetailUserRequest extends FormRequest
             'password_confirmation.required' => 'Konfirmasi password wajib diisi',
             'password_confirmation.same'     => 'Konfirmasi password tidak sama dengan password',
 
-            'image.required'                 => 'Foto wajib diunggah.',
-            'image.max'                      => 'Ukuran foto maksimal 2MB.',
+            'image.required'                 => 'Gambar wajib diunggah.',
+            'image.image'                    => 'File harus berupa gambar.',
+            'image.mimes'                    => 'Format gambar harus jpeg, png, jpg, gif, atau svg.',
+            'image.max'                      => 'Ukuran gambar maksimal 2MB.',
+
         ];
     }
 }

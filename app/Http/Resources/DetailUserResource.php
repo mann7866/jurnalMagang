@@ -2,6 +2,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DetailUserResource extends JsonResource
@@ -14,7 +15,7 @@ class DetailUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = [
-            'image'         => $this->image,
+            'image'         => $this->image ? Storage::url($this->image) : null,,
             'student_name'  => optional($this->user)->name,
             'no_telp'       => $this->no_telp,
             'address'       => $this->address,

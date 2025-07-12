@@ -22,9 +22,9 @@ class JournalRequest extends FormRequest
     {
         return [
             'title'       => 'required|min:5|max:50',
-            'image'       => $this->isMethod('post') ?
-            ['required', 'max:2048'] :
-            ['nullable', 'max:2048'],
+            'image'       => $this->isMethod('post')
+            ? ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+            : ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'description' => 'required|min:1|max:500',
         ];
     }
@@ -37,7 +37,9 @@ class JournalRequest extends FormRequest
             'title.max'            => 'Judul maksimal terdiri dari 50 karakter.',
 
             'image.required'       => 'Gambar wajib diunggah.',
-            'image.max'            => 'Ukuran gambar tidak boleh lebih dari 2MB (2048 KB).',
+            'image.image'          => 'File harus berupa gambar.',
+            'image.mimes'          => 'Format gambar harus jpeg, png, jpg, gif, atau svg.',
+            'image.max'            => 'Ukuran gambar maksimal 2MB.',
 
             'description.required' => 'Deskripsi wajib diisi.',
             'description.min'      => 'Deskripsi minimal harus terdiri dari 150 karakter.',

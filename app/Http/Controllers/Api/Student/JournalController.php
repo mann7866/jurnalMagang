@@ -5,23 +5,19 @@ use App\Contracts\Interfaces\JournalInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JournalRequest;
 use App\Http\Resources\JournalResource;
-use App\Services\DetailUserService;
 use App\Services\JournalService;
 
 class JournalController extends Controller
 {
     private JournalInterface $journalInterface;
-    private DetailUserService $detailUserService;
 
     private JournalService $journalService;
 
     public function __construct(
         JournalInterface $journalInterface,
-        DetailUserService $detailUserService,
         JournalService $journalService,
     ) {
         $this->journalInterface  = $journalInterface;
-        $this->detailUserService = $detailUserService;
         $this->journalService    = $journalService;
     }
 
