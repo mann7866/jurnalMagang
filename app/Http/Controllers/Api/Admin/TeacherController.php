@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Contracts\Interfaces\TeacherInterface;
 use App\Models\User;
+use App\Traits\UploadTrait;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Services\DetailUserService;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DetailUserRequest;
 use App\Http\Resources\DetailUserResource;
+use App\Contracts\Interfaces\TeacherInterface;
 
 class TeacherController extends Controller
 {
+    use UploadTrait;
+
      private TeacherInterface $teacherInterface;
     private DetailUserService $detailUserService;
 
@@ -44,10 +47,10 @@ class TeacherController extends Controller
     {
         try {
 
-            $data                       = $this->detailUserService->prepareData($request);
+            $data                       = $this->detailUserService->prepareDataTeacher($request);
             $newUser                    = User::create($data['user'])->assignRole('teacher');
-            $data['detailUser']['user_id'] = $newUser->id;
-            $newTeacher                 = $this->teacherInterface->store($data['detailUser']);
+            $data['detailTeacher']['user_id'] = $newUser->id;
+            $newTeacher                 = $this->teacherInterface->store($data['detailTeacher']);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Store success',
@@ -72,12 +75,12 @@ class TeacherController extends Controller
                     'messages' => 'Teacher not found',
                 ], 404);
             }
-            $data = $this->detailUserService->prepareData($request,$teacher);
+            $data = $this->detailUserService->prepareDataTeacher($request,$teacher);
             $teacher->user->update([
                 'name'  => $data['user']['name'],
                 'email' => $data['user']['email'],
             ]);
-            $this->teacherInterface->update($id, $data['detailUser']);
+            $this->teacherInterface->update($id, $data['detaiTeacher']);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Update success',
@@ -96,8 +99,11 @@ class TeacherController extends Controller
     public function destroy($id)
     {
         try {
-            $teacher = $this->teacherInterface->find($id);
-            $userId  = $teacher->user_id;
+            $oldTeacher = $this->teacherInterface->find($id);
+             if ($oldTeacher != null && $oldTeacher->image) {
+                $this->remove($oldTeacher->image);
+            }
+            $userId  = $oldTeacher->user_id;
             User::findOrFail($userId)->delete();
             return response()->json([
                 'status'   => true,

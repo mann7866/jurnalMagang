@@ -1,15 +1,18 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Models\User;
+use App\Contracts\Interfaces\StudentInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DetailUserRequest;
-use App\Contracts\Interfaces\StudentInterface;
 use App\Http\Resources\DetailUserResource;
+use App\Models\User;
 use App\Services\DetailUserService;
+use App\Traits\UploadTrait;
 
 class StudentController extends Controller
 {
+    use UploadTrait;
+
     private StudentInterface $studentInterface;
     private DetailUserService $detailUserService;
 
@@ -17,8 +20,8 @@ class StudentController extends Controller
         StudentInterface $studentInterface,
         DetailUserService $detailUserService,
     ) {
-        $this->studentInterface = $studentInterface;
-        $this->detailUserService   = $detailUserService;
+        $this->studentInterface  = $studentInterface;
+        $this->detailUserService = $detailUserService;
     }
     public function getData()
     {
@@ -42,10 +45,10 @@ class StudentController extends Controller
     {
         try {
 
-            $data                       = $this->detailUserService->prepareData($request);
-            $newUser                    = User::create($data['user'])->assignRole('student');
-            $data['detailUser']['user_id'] = $newUser->id;
-            $newStudent                 = $this->studentInterface->store($data['detailUser']);
+            $data                             = $this->detailUserService->prepareDataStudent($request);
+            $newUser                          = User::create($data['user'])->assignRole('student');
+            $data['detailStudent']['user_id'] = $newUser->id;
+            $newStudent                       = $this->studentInterface->store($data['detailStudent']);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Store success',
@@ -70,12 +73,12 @@ class StudentController extends Controller
                     'messages' => 'Student not found',
                 ], 404);
             }
-            $data = $this->detailUserService->prepareData($request, $student);
+            $data = $this->detailUserService->prepareDataStudent($request, $student);
             $student->user->update([
                 'name'  => $data['user']['name'],
                 'email' => $data['user']['email'],
             ]);
-            $this->studentInterface->update($id, $data['detailUser']);
+            $this->studentInterface->update($id, $data['detailStudent']);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Update success',
@@ -94,8 +97,11 @@ class StudentController extends Controller
     public function destroy($id)
     {
         try {
-            $student = $this->studentInterface->find($id);
-            $userId  = $student->user_id;
+            $oldStudent = $this->studentInterface->find($id);
+            if ($oldStudent != null && $oldStudent->image) {
+                $this->remove($oldStudent->image);
+            }
+            $userId = $oldStudent->user_id;
             User::findOrFail($userId)->delete();
             return response()->json([
                 'status'   => true,

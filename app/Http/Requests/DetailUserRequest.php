@@ -36,11 +36,11 @@ class DetailUserRequest extends FormRequest
             'image'                 => $this->isMethod('post')
             ? ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
             : ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'student_name'          => ['required', 'string', 'max:255'],
+            'name'          => ['required', 'string', 'max:255'],
             'no_telp'               => ['required', 'min:11', 'max:12'],
             'email'                 => $this->isMethod('post')
             ? ['required', 'email', 'unique:users,email']
-            : ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            : ['nullable', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'address'               => ['required', 'string'],
             'nisn'                  => ['sometimes', 'required', 'string', 'digits:10'],
             'nuptk'                 => ['sometimes', 'required', 'string', 'digits:16'],
