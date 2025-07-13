@@ -8,4 +8,5 @@ use App\Contracts\Interfaces\Eloquent\FindInterface;
 interface JournalInterface extends BaseInterface, FindInterface
 {
     public function getStudentJournalById(mixed $id);
+    public function getAllJournalToDay();
 }

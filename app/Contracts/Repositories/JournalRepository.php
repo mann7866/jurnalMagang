@@ -1,8 +1,9 @@
 <?php
 namespace App\Contracts\Repositories;
 
-use App\Contracts\Interfaces\JournalInterface;
+use Carbon\Carbon;
 use App\Models\Journal;
+use App\Contracts\Interfaces\JournalInterface;
 
 class JournalRepository extends BaseRepository implements JournalInterface
 {
@@ -52,7 +53,16 @@ class JournalRepository extends BaseRepository implements JournalInterface
         return $this->model->query()->findOrFail($id);
     }
 
-      public function getStudentJournalById(mixed $id){
+    public function getStudentJournalById(mixed $id)
+    {
         return $this->model->query()->where('student_id', $id)->get();
+    }
+
+    public function getAllJournalToDay()
+    {
+        return $this->model->query()
+            ->latest()
+            ->whereDate('created_at', Carbon::today())
+            ->get();
     }
 }

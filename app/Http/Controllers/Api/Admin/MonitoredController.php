@@ -6,18 +6,22 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\JournalResource;
 use App\Http\Resources\DetailUserResource;
 use App\Contracts\Interfaces\JournalInterface;
+use App\Contracts\Interfaces\StudentInterface;
 use App\Contracts\Interfaces\TeacherInterface;
 
 class MonitoredController extends Controller
 {
     private TeacherInterface $teacherInterface;
+    private StudentInterface $studentInterface;
     private JournalInterface $journalInterface;
 
     public function __construct(
         TeacherInterface $teacherInterface,
+        StudentInterface $studentInterface,
         JournalInterface $journalInterface,
     ) {
         $this->teacherInterface = $teacherInterface;
+        $this->studentInterface = $studentInterface;
         $this->journalInterface = $journalInterface;
     }
 
@@ -25,7 +29,7 @@ class MonitoredController extends Controller
     {
         return response()->json([
             'status'   => true,
-            'messages' => 'Collection Teachers data',
+            'messages' => 'Collection Teachers all data',
             'teachers' => DetailUserResource::collection($this->teacherInterface->get()),
         ]);
     }
@@ -42,8 +46,24 @@ class MonitoredController extends Controller
 
         return response()->json([
             'status'   => true,
-            'messages' => 'Collection Students data',
+            'messages' => 'Collection Students by teacher data',
             'students' => DetailUserResource::collection($students),
+        ]);
+    }
+
+    public function getAllStudent(){
+         return response()->json([
+            'status'   => true,
+            'messages' => 'Collection Students all data',
+            'students' => DetailUserResource::collection($this->studentInterface->get()),
+        ]);
+    }
+
+    public function getAllJournalToDay(){
+         return response()->json([
+            'status'   => true,
+            'messages' => 'Collection Journal all today data',
+            'students' => JournalResource::collection($this->journalInterface->getAllJournalToDay()),
         ]);
     }
 
@@ -55,7 +75,7 @@ class MonitoredController extends Controller
             $journal   = $this->journalInterface->getStudentJournalById($studentId);
             return response()->json([
                 'status'   => true,
-                'messages' => 'Collection journals data',
+                'messages' => 'Collection journals by student data',
                 'journals'     => JournalResource::collection($journal),
             ], 200);
         } catch (\Exception $e) {
