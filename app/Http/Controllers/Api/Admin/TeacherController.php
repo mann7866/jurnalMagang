@@ -25,23 +25,6 @@ class TeacherController extends Controller
         $this->teacherInterface = $teacherInterface;
         $this->detailUserService   = $detailUserService;
     }
-    public function getData()
-    {
-        try {
-            $teacher = $this->teacherInterface->get();
-            return response()->json([
-                'status'   => true,
-                'messages' => 'Collect teacher data',
-                'data'     => DetailUserResource::collection($teacher),
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status'   => false,
-                'messages' => 'error',
-                'data'     => $e->getMessage(),
-            ], 500);
-        }
-    }
 
     public function store(DetailUserRequest $request)
     {

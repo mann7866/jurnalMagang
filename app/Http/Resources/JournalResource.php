@@ -16,8 +16,8 @@ class JournalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'name'         => $this->student?->user?->name ?? 'Nama tidak tersedia',
             'id'           => $this->id,
-            'name'         => optional($this->user)->name,
             'image'        => $this->image ? Storage::url($this->image) : null,
             'title'        => $this->title,
             'description'  => $this->description,

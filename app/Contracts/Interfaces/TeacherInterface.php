@@ -14,5 +14,4 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface TeacherInterface extends GetInterface, StoreInterface, UpdateInterface, DeleteInterface,ShowInterface,FindInterface
 {
-    
 }

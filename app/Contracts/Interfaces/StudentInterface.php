@@ -11,4 +11,5 @@ use App\Contracts\Interfaces\Eloquent\UpdateInterface;
 
 interface StudentInterface extends GetInterface, StoreInterface, UpdateInterface, DeleteInterface,ShowInterface,FindInterface
 {
+    //
 }

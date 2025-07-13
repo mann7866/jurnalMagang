@@ -23,23 +23,6 @@ class StudentController extends Controller
         $this->studentInterface  = $studentInterface;
         $this->detailUserService = $detailUserService;
     }
-    public function getData()
-    {
-        try {
-            $student = $this->studentInterface->get();
-            return response()->json([
-                'status'   => true,
-                'messages' => 'Collect student data',
-                'data'     => DetailUserResource::collection($student),
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status'   => false,
-                'messages' => 'error',
-                'data'     => $e->getMessage(),
-            ], 500);
-        }
-    }
 
     public function store(DetailUserRequest $request)
     {

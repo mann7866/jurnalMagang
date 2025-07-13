@@ -15,7 +15,7 @@ class JournalService
 
      public function store(JournalRequest $request){
         $validData = $request->validated();
-        $userId = Auth::id();
+        $userId = Auth::user()->student?->id;
         $uploadedImage = 'file_not_found';
         if($request->hasFile('image')) {
             $uploadedImage = $this->upload(

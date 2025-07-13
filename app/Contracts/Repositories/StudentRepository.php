@@ -51,6 +51,5 @@ class StudentRepository extends BaseRepository implements StudentInterface
     public function find(mixed $id): mixed{
         return $this->model->query()->findOrFail($id);
     }
-    
 
 }

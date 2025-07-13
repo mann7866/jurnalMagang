@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -44,7 +43,36 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
+
+    public function getDetailUserAttribute()
+    {
+        if ($this->hasRole('student')) {
+            return $this->student;
+        }
+
+        if ($this->hasRole('teacher')) {
+            return $this->teacher;
+        }
+
+        return null;
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'user_id');
+    }
+
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class, 'user_id');
+    }
+
+    public function teachers()
+    {
+        return $this->hasMany(Teacher::class,'user_id');
+    }
+
 }

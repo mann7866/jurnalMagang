@@ -51,4 +51,8 @@ class JournalRepository extends BaseRepository implements JournalInterface
     {
         return $this->model->query()->findOrFail($id);
     }
+
+      public function getStudentJournalById(mixed $id){
+        return $this->model->query()->where('student_id', $id)->get();
+    }
 }

@@ -1,14 +1,17 @@
 <?php
 namespace App\Http\Controllers\api\Student;
 
-use App\Contracts\Interfaces\JournalInterface;
+use App\Services\JournalService;
 use App\Http\Controllers\Controller;
+use App\Traits\UploadTrait;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\JournalRequest;
 use App\Http\Resources\JournalResource;
-use App\Services\JournalService;
+use App\Contracts\Interfaces\JournalInterface;
 
 class JournalController extends Controller
 {
+    use UploadTrait;
     private JournalInterface $journalInterface;
 
     private JournalService $journalService;
@@ -24,7 +27,8 @@ class JournalController extends Controller
     public function getData()
     {
         try {
-            $journal = $this->journalInterface->get();
+            $studentId = Auth::user()->student->id;
+            $journal = $this->journalInterface->getStudentJournalById($studentId);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Collect data journal',
@@ -80,6 +84,10 @@ class JournalController extends Controller
     public function destroy($id)
     {
         try {
+            $oldJurnal = $this->journalInterface->find($id);
+            if ($oldJurnal != null && $oldJurnal->image) {
+                $this->remove($oldJurnal->image);
+            }
             $this->journalInterface->delete($id);
             return response()->json([
                 'status'   => true,

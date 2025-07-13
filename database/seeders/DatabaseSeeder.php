@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\StudentTeacherSeeder;
+use Egulias\EmailValidator\Result\Reason\DetailedReason;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,25 +18,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->call([
             RoleSeeder::class,
+            UserSeeder::class,
+            DetailUserSeeder::class,
+            JournalSeeder::class,
+            StudentTeacherSeeder::class
         ]);
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => 'password',
-        ])->assignRole('admin');
 
-        User::factory()->create([
-            'name' => 'Guru',
-            'email' => 'guru@example.com',
-            'password' => 'password',
-        ])->assignRole('teacher');
-
-        User::factory()->create([
-            'name' => 'Siswa',
-            'email' => 'siswa@example.com',
-            'password' => 'password',
-        ])->assignRole('student');
 
     }
 }
