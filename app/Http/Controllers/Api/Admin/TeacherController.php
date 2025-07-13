@@ -63,7 +63,7 @@ class TeacherController extends Controller
                 'name'  => $data['user']['name'],
                 'email' => $data['user']['email'],
             ]);
-            $this->teacherInterface->update($id, $data['detaiTeacher']);
+            $this->teacherInterface->update($id, $data['detailTeacher']);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Update success',
