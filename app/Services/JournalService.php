@@ -27,7 +27,7 @@ class JournalService
         $fixDataJournal = [
             'title' => $validData['title'],
             'description' => $validData['description'],
-            'user_id' => $userId,
+            'student_id' => $userId,
         ];
 
         if ($uploadedImage) {
