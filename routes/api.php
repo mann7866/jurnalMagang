@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(App\Http\Controllers\Api\Teacher\MonitoredController::class)->prefix('/monitored')->name('monitored.')->group(function () {
             Route::get('/get/students', 'getMonitoredStudents')->name('getMonitoredStudents');
             Route::get('/get/student/{id}/journal', 'getJurnalByStudentId')->name('getJurnalByStudentId');
+            Route::get('/get/all/student/journal/today/by/teacher', 'getAllJournalToDayByTeacherId')->name('getAllJournalToDayByTeacherId');
         });
     });
 

@@ -39,6 +39,14 @@ class MonitoredController extends Controller
         ]);
     }
 
+    public function getAllJournalToDayByTeacherId(){
+        $teacherId = Auth::user()->teacher->id;
+         return response()->json([
+            'status'   => true,
+            'messages' => 'Collection Journal all today data',
+            'journals' => JournalResource::collection($this->journalInterface->getAllJournalTodayByTeacherId($teacherId)),
+        ]);
+    }
     public function getJurnalByStudentId($id)
     {
         try {

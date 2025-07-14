@@ -3,6 +3,7 @@ namespace App\Contracts\Repositories;
 
 use Carbon\Carbon;
 use App\Models\Journal;
+use App\Models\Teacher;
 use App\Contracts\Interfaces\JournalInterface;
 
 class JournalRepository extends BaseRepository implements JournalInterface
@@ -65,4 +66,23 @@ class JournalRepository extends BaseRepository implements JournalInterface
             ->whereDate('created_at', Carbon::today())
             ->get();
     }
+  public function getAllJournalTodayByTeacherId($teacherId)
+{
+    $teacher = Teacher::with('monitoredStudents')->findOrFail($teacherId);
+
+    $journals = collect();
+
+    foreach ($teacher->monitoredStudents as $student) {
+        $journal = $this->model->query()
+            ->where('student_id', $student->id)
+            ->whereDate('created_at', Carbon::today())
+            ->latest()
+            ->get();
+
+        $journals = $journals->merge($journal);
+    }
+
+    return $journals;
+}
+
 }
