@@ -3,6 +3,7 @@ namespace App\Http\Requests;
 
 use App\Enums\GenderEnum;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -17,13 +18,27 @@ class DetailUserRequest extends FormRequest
     protected function prepareForValidation()
     {
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $studentId = $this->route('id');
-            $student   = Student::find($studentId);
+            $role = auth()->user()->getRoleNames()->first();
 
-            if ($student) {
-                $this->merge([
-                    'user_id' => $student->user_id,
-                ]);
+            if ($role === 'teacher') {
+                $teacherId = $this->route('id');
+                $teacher   = Teacher::find($teacherId);
+
+                if ($teacher) {
+                    $this->merge([
+                        'user_id' => $teacher->user_id,
+                    ]);
+                }
+
+            } elseif ($role === 'student') {
+                $studentId = $this->route('id');
+                $student   = Student::find($studentId);
+
+                if ($student) {
+                    $this->merge([
+                        'user_id' => $student->user_id,
+                    ]);
+                }
             }
         }
     }
@@ -36,7 +51,7 @@ class DetailUserRequest extends FormRequest
             'image'                 => $this->isMethod('post')
             ? ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
             : ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'name'          => ['required', 'string', 'max:255'],
+            'name'                  => ['required', 'string', 'max:255'],
             'no_telp'               => ['required', 'min:11', 'max:12'],
             'email'                 => $this->isMethod('post')
             ? ['required', 'email', 'unique:users,email']
