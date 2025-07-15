@@ -34,7 +34,7 @@ class MonitoredController extends Controller
         ]);
     }
 
-     public function getMonitoredStudents($id)
+     public function getMonitoredStudentsByTeacherId($id)
     {
         $teacher = $this->teacherInterface->find($id);
 
