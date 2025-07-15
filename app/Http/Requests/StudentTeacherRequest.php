@@ -24,6 +24,7 @@ class StudentTeacherRequest extends FormRequest
         return [
             'teacher_id' => 'required|exists:teachers,id',
             'student_id' => 'required|exists:students,id',
+            'student_id.*' => 'required|exists:students,id',
         ];
     }
 }
