@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Contracts\Interfaces\StudentInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DetailUserRequest;
+use App\Http\Requests\StudentRequest;
 use App\Http\Resources\DetailUserResource;
 use App\Models\User;
 use App\Services\DetailUserService;
@@ -24,7 +24,7 @@ class StudentController extends Controller
         $this->detailUserService = $detailUserService;
     }
 
-    public function store(DetailUserRequest $request)
+    public function store(StudentRequest $request)
     {
         try {
 
@@ -46,7 +46,7 @@ class StudentController extends Controller
         }
     }
 
-    public function update(DetailUserRequest $request, $id)
+    public function update(StudentRequest $request, $id)
     {
         try {
             $student = $this->studentInterface->find($id);

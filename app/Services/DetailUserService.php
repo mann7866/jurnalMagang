@@ -2,14 +2,15 @@
 namespace App\Services;
 
 use App\Enums\UploadDiskEnum;
-use App\Http\Requests\DetailUserRequest;
+use App\Http\Requests\StudentRequest;
+use App\Http\Requests\TeacherRequest;
 use App\Traits\UploadTrait;
 use Illuminate\Support\Facades\Hash;
 
 class DetailUserService
 {
     use UploadTrait;
-    public function prepareDataTeacher(DetailUserRequest $request, $oldData = null)
+    public function prepareDataTeacher(TeacherRequest $request, $oldData = null)
     {
         $validData = $request->validated();
 
@@ -56,7 +57,7 @@ class DetailUserService
             'detailTeacher' => $newdetail,
         ];
     }
-    public function prepareDataStudent(DetailUserRequest $request, $oldData = null)
+    public function prepareDataStudent(StudentRequest $request, $oldData = null)
     {
         $validData = $request->validated();
 

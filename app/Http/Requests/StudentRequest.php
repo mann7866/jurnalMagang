@@ -3,54 +3,33 @@ namespace App\Http\Requests;
 
 use App\Enums\GenderEnum;
 use App\Models\Student;
-use App\Models\Teacher;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
-class DetailUserRequest extends FormRequest
+class StudentRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
-
+    
     protected function prepareForValidation()
     {
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $id = $this->route('id');
 
-            $student = Student::with('user')->find($id);
-            $teacher = Teacher::with('user')->find($id);
+            $studentId = $this->route('id');
+            $student   = Student::find($studentId);
 
-            if ($student && $student->user) {
-                $role = $student->user->getRoleNames()->first();
-            } elseif ($teacher && $teacher->user) {
-                $role = $teacher->user->getRoleNames()->first();
-            } else {
-                $role = null;
+            if ($student) {
+                $this->merge([
+                    'user_id' => $student->user_id,
+                ]);
             }
 
-            if ($role === 'teacher') {
-                $teacherId = $this->route('id');
-                $teacher   = Teacher::find($teacherId);
-
-                if ($teacher) {
-                    $this->merge([
-                        'user_id' => $teacher->user_id,
-                    ]);
-                }
-
-            } elseif ($role === 'student') {
-                $studentId = $this->route('id');
-                $student   = Student::find($studentId);
-
-                if ($student) {
-                    $this->merge([
-                        'user_id' => $student->user_id,
-                    ]);
-                }
-            }
         }
     }
 
@@ -69,7 +48,6 @@ class DetailUserRequest extends FormRequest
             : ['nullable', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'address'               => ['required', 'string'],
             'nisn'                  => ['sometimes', 'required', 'string', 'digits:10'],
-            'nuptk'                 => ['sometimes', 'required', 'string', 'digits:16'],
             'date_of_birth'         => ['required', 'date', 'before:today'],
             'gender'                => ['required', new Enum(GenderEnum::class)],
             'password'              => ['sometimes', 'required', 'min:6', 'confirmed'],
@@ -94,10 +72,6 @@ class DetailUserRequest extends FormRequest
             'nisn.required'                  => 'NISN wajib diisi.',
             'nisn.string'                    => 'NISN harus berupa teks.',
             'nisn.digits'                    => 'NISN harus terdiri dari 10 digit angka.',
-
-            'nuptk.required'                 => 'NUPTK wajib diisi.',
-            'nuptk.string'                   => 'NUPTK harus berupa teks.',
-            'nuptk.digits'                   => 'NUPTK harus terdiri dari 16 digit angka.',
 
             'date_of_birth.required'         => 'Tanggal lahir wajib diisi.',
             'date_of_birth.date'             => 'Tanggal lahir harus berupa format tanggal yang valid.',

@@ -7,7 +7,7 @@ use App\Traits\UploadTrait;
 use Illuminate\Http\Request;
 use App\Services\DetailUserService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DetailUserRequest;
+use App\Http\Requests\TeacherRequest;
 use App\Http\Resources\DetailUserResource;
 use App\Contracts\Interfaces\TeacherInterface;
 
@@ -26,7 +26,7 @@ class TeacherController extends Controller
         $this->detailUserService   = $detailUserService;
     }
 
-    public function store(DetailUserRequest $request)
+    public function store(TeacherRequest $request)
     {
         try {
 
@@ -48,7 +48,7 @@ class TeacherController extends Controller
         }
     }
 
-    public function update(DetailUserRequest $request, $id)
+    public function update(TeacherRequest $request, $id)
     {
         try {
             $teacher = $this->teacherInterface->find($id);
