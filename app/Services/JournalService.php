@@ -1,23 +1,42 @@
 <?php
 namespace App\Services;
 
-use id;
-use App\Traits\UploadTrait;
+use App\Contracts\Interfaces\JournalInterface;
 use App\Enums\UploadDiskEnum;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\JournalRequest;
-use App\Http\Requests\DetailUserRequest;
+use App\Traits\UploadTrait;
+use Carbon\Carbon;
+use id;
+use Illuminate\Support\Facades\Auth;
 
 class JournalService
 {
     use UploadTrait;
+    private JournalInterface $journalInterface;
 
-     public function store(JournalRequest $request){
+    public function __construct(
+        JournalInterface $journalInterface,
+    ) {
+        $this->journalInterface = $journalInterface;
+    }
+
+    public function store(JournalRequest $request)
+    {
         $validData = $request->validated();
-        $userId = Auth::user()->student?->id;
+        $studentId = Auth::user()->student?->id;
+        $today     = Carbon::today();
+        $data      = [
+            'student_id' => $studentId,
+            'date'       => $today,
+        ];
+        $alreadyExist = $this->journalInterface->existsJournalToday($data);
+
+        if ($alreadyExist) {
+            throw new \Exception('You have made a journal for today.');
+        }
+
         $uploadedImage = 'file_not_found';
-        if($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             $uploadedImage = $this->upload(
                 UploadDiskEnum::IMAGEJOURNAL->value,
                 file: $validData['image']
@@ -25,24 +44,26 @@ class JournalService
         }
 
         $fixDataJournal = [
-            'title' => $validData['title'],
+            'title'       => $validData['title'],
             'description' => $validData['description'],
-            'student_id' => $userId,
+            'student_id'  => $studentId,
         ];
 
         if ($uploadedImage) {
             $fixDataJournal['image'] = $uploadedImage;
         }
 
-        return[
-            'jurnal' => $fixDataJournal
+        return [
+            'jurnal' => $fixDataJournal,
         ];
 
     }
-     public function update(JournalRequest $request, $oldData = null){
+    public function update(JournalRequest $request, $oldData = null)
+    {
         $validData = $request->validated();
+
         // $userId = Auth::id();
-          $uploadedImage = $oldData->image ?? null;
+        $uploadedImage = $oldData->image ?? null;
 
         if ($request->hasFile('image')) {
             $newImage = $this->upload(
@@ -58,7 +79,7 @@ class JournalService
         }
 
         $fixDataJournal = [
-            'title' => $validData['title'],
+            'title'       => $validData['title'],
             'description' => $validData['description'],
             // 'user_id' => $userId,
         ];
@@ -67,10 +88,37 @@ class JournalService
             $fixDataJournal['image'] = $uploadedImage;
         }
 
-        return[
-            'jurnal' => $fixDataJournal
+        return [
+            'jurnal' => $fixDataJournal,
         ];
 
+    }
+
+    public function getMissingYesterdayJournals()
+    {
+
+        $yesterday = Carbon::yesterday();
+        $students  = $this->journalInterface->get();
+        $journals  = collect();
+
+        foreach ($students as $student) {
+            $data = [
+                'student_id' => $student->id,
+                'date'       => $yesterday,
+            ];
+            $alreadyExist = $this->journalInterface->existsJournalToday($data);
+            if (! $alreadyExist) {
+                $journals->push([
+                    'student_id'  => $student->id,
+                    'title'       => 'tidak mengisi journal',
+                    'description' => 'tidak mengisi journal',
+                    'image'       => 'assets/image/journal/imageJournalNotFound.png',
+                    'created_at'  => $yesterday,
+                    'updated_at'  => $yesterday,
+                ]);
+            }
+        }
+        return $journals;
     }
 
 }

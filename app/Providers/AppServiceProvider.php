@@ -1,14 +1,15 @@
 <?php
-
 namespace App\Providers;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\ServiceProvider;
 use App\Contracts\Interfaces\JournalInterface;
 use App\Contracts\Interfaces\StudentInterface;
 use App\Contracts\Interfaces\TeacherInterface;
 use App\Contracts\Repositories\JournalRepository;
 use App\Contracts\Repositories\StudentRepository;
 use App\Contracts\Repositories\TeacherRepository;
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $key = 'generate_journal_' . Carbon::yesterday()->toDateString();
+
+        if (! Cache::has($key)) {
+            app(abstract : \App\Http\Controllers\api\Student\JournalController::class)->generateEmptyJournalByDate();
+            Cache::put($key, true, now()->addDay());
+        }
     }
 }

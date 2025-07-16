@@ -10,4 +10,5 @@ interface JournalInterface extends BaseInterface, FindInterface
     public function getStudentJournalById(mixed $id);
     public function getAllJournalToDay();
     public function getAllJournalTodayByTeacherId($teacherId);
+    public function existsJournalToday(array $data);
 }

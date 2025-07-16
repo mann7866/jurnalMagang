@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers\api\Student;
 
-use App\Services\JournalService;
+use App\Contracts\Interfaces\JournalInterface;
 use App\Http\Controllers\Controller;
-use App\Traits\UploadTrait;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\JournalRequest;
 use App\Http\Resources\JournalResource;
-use App\Contracts\Interfaces\JournalInterface;
+use App\Services\JournalService;
+use App\Traits\UploadTrait;
+use Illuminate\Support\Facades\Auth;
 
 class JournalController extends Controller
 {
@@ -20,15 +20,15 @@ class JournalController extends Controller
         JournalInterface $journalInterface,
         JournalService $journalService,
     ) {
-        $this->journalInterface  = $journalInterface;
-        $this->journalService    = $journalService;
+        $this->journalInterface = $journalInterface;
+        $this->journalService   = $journalService;
     }
 
     public function getData()
     {
         try {
             $studentId = Auth::user()->student->id;
-            $journal = $this->journalInterface->getStudentJournalById($studentId);
+            $journal   = $this->journalInterface->getStudentJournalById($studentId);
             return response()->json([
                 'status'   => true,
                 'messages' => 'Collect data journal',
@@ -100,6 +100,21 @@ class JournalController extends Controller
                 'data'     => $e->getMessage(),
             ]);
         }
+
+    }
+
+    public function generateEmptyJournalByDate()
+    {
+        $journals = $this->journalService->getMissingYesterdayJournals();
+
+        foreach ($journals as $journal) {
+            $this->journalInterface->store($journal);
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => $journals->count() . 'blank journal successfully created.',
+        ]);
 
     }
 

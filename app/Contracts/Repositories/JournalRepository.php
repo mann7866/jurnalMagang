@@ -1,10 +1,10 @@
 <?php
 namespace App\Contracts\Repositories;
 
-use Carbon\Carbon;
+use App\Contracts\Interfaces\JournalInterface;
 use App\Models\Journal;
 use App\Models\Teacher;
-use App\Contracts\Interfaces\JournalInterface;
+use Carbon\Carbon;
 
 class JournalRepository extends BaseRepository implements JournalInterface
 {
@@ -66,23 +66,31 @@ class JournalRepository extends BaseRepository implements JournalInterface
             ->whereDate('created_at', Carbon::today())
             ->get();
     }
-  public function getAllJournalTodayByTeacherId($teacherId)
-{
-    $teacher = Teacher::with('monitoredStudents')->findOrFail($teacherId);
+    public function getAllJournalTodayByTeacherId($teacherId)
+    {
+        $teacher = Teacher::with('monitoredStudents')->findOrFail($teacherId);
 
-    $journals = collect();
+        $journals = collect();
 
-    foreach ($teacher->monitoredStudents as $student) {
-        $journal = $this->model->query()
-            ->where('student_id', $student->id)
-            ->whereDate('created_at', Carbon::today())
-            ->latest()
-            ->get();
+        foreach ($teacher->monitoredStudents as $student) {
+            $journal = $this->model->query()
+                ->where('student_id', $student->id)
+                ->whereDate('created_at', Carbon::today())
+                ->latest()
+                ->get();
 
-        $journals = $journals->merge($journal);
+            $journals = $journals->merge($journal);
+        }
+
+        return $journals;
     }
 
-    return $journals;
-}
+    public function existsJournalToday(array $data)
+    {
+        return $this->model->query()
+        ->where('student_id', $data['student_id'])
+        ->whereDate('created_at', $data['date'])
+        ->exists();
+    }
 
 }
