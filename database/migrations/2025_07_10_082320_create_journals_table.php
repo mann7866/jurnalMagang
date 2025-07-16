@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('title');
             $table->text('description');
             $table->foreignId('student_id')->constrained('students')->restrictOnDelete()->cascadeOnUpdate();
