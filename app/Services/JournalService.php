@@ -112,7 +112,7 @@ class JournalService
                     'student_id'  => $student->id,
                     'title'       => 'tidak mengisi journal',
                     'description' => 'tidak mengisi journal',
-                    'image'       => 'assets/image/journal/imageJournalNotFound.png',
+                    'image'       => 'imageJournalNotFound.',
                     'created_at'  => $yesterday,
                     'updated_at'  => $yesterday,
                 ]);
