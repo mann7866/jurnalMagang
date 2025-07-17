@@ -80,9 +80,9 @@ class JournalRepository extends BaseRepository implements JournalInterface
 
         foreach ($teacher->monitoredStudents as $student) {
             $journal = $this->model->query()
+                ->latest()
                 ->where('student_id', $student->id)
                 ->whereDate('created_at', Carbon::today())
-                ->latest()
                 ->get();
 
             $journals = $journals->merge($journal);
