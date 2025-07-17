@@ -67,7 +67,7 @@ class JournalService
 
         if ($request->hasFile('image')) {
             $newImage = $this->upload(
-                disk: UploadDiskEnum::IMAGETEACHER->value,
+                disk: UploadDiskEnum::IMAGEJOURNAL->value,
                 file: $validData['image']
             );
 
