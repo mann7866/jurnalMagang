@@ -27,12 +27,5 @@ class AuthRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            'email.required' => 'email tidak boleh kosong',
-            'email.email' => 'email harus menggunakan @',
-            'password.required' => 'passworn tidak boleh kosong',
-        ];
-    }
+    
 }

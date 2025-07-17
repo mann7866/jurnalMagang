@@ -107,7 +107,7 @@ class JournalService
                 'date'       => $yesterday,
             ];
             $alreadyExist = $this->journalInterface->existsJournalToday($data);
-            if (! $alreadyExist) {
+            if (!$alreadyExist) {
                 $journals->push([
                     'student_id'  => $student->id,
                     'title'       => 'tidak mengisi journal',

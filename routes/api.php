@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/get/student/all','getAllStudent')->name('getAllStudent');
             Route::get('/get/journal/today','getAllJournalToDay')->name('getAllJournalToDay');
             Route::get('/get/student/{id}/journal', 'getJurnalByStudentId')->name('getJurnalByStudentId');
+            Route::get('/dashboard','dashboard')->name('dashboard');
         });
     });
 
@@ -59,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/get/students', 'getMonitoredStudents')->name('getMonitoredStudents');
             Route::get('/get/student/{id}/journal', 'getJurnalByStudentId')->name('getJurnalByStudentId');
             Route::get('/get/all/student/journal/today/by/teacher', 'getAllJournalToDayByTeacherId')->name('getAllJournalToDayByTeacherId');
+            Route::get('/dashboard','dashboard')->name('dashboard');
         });
     });
 
@@ -66,6 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
 
         // journal route
+        Route::controller(App\Http\Controllers\api\Student\JournalController::class)->prefix('/dashboard')->group(function () {
+            Route::get('','dashboard')->name('dashboard');
+        });
         Route::controller(App\Http\Controllers\api\Student\JournalController::class)->prefix('/journal')->name('journal.')->group(function () {
             Route::get('/get/data', 'getData')->name('get');
             Route::post('/store', 'store')->name('store');

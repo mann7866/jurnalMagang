@@ -1,27 +1,48 @@
 <?php
 namespace App\Http\Controllers\Api\Teacher;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\DetailUserResource;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\JournalResource;
 use App\Contracts\Interfaces\JournalInterface;
 use App\Contracts\Interfaces\TeacherInterface;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\DetailUserResource;
+use App\Http\Resources\JournalResource;
+use App\Services\MonitoredService;
+use Illuminate\Support\Facades\Auth;
 
 class MonitoredController extends Controller
 {
     private JournalInterface $journalInterface;
     private TeacherInterface $teacherInterface;
+    private MonitoredService $monitoredService;
 
     public function __construct(
         JournalInterface $journalInterface,
         TeacherInterface $teacherInterface,
-
+        MonitoredService $monitoredService,
     ) {
         $this->journalInterface = $journalInterface;
         $this->teacherInterface = $teacherInterface;
+        $this->monitoredService = $monitoredService;
     }
 
+    public function dashboard()
+    {
+        $teacher = Auth::user()->teacher;
+
+        if (! $teacher) {
+            return response()->json(['message' => 'Not a teacher.'], 403);
+        }
+
+        $data = $this->monitoredService->prepareDataForTeacher($teacher);
+        return response()->json([
+            'status'   => true,
+            'messages' => 'Collection Teachers all data',
+            'data'     => [
+                'totalStudent'      => $data['totalStudent'],
+                'totalJournalToday' => $data['totalJournalToday'],
+            ],
+        ]);
+    }
     public function getMonitoredStudents()
     {
         $teacher = Auth::user()->teacher;
@@ -39,9 +60,10 @@ class MonitoredController extends Controller
         ]);
     }
 
-    public function getAllJournalToDayByTeacherId(){
+    public function getAllJournalToDayByTeacherId()
+    {
         $teacherId = Auth::user()->teacher->id;
-         return response()->json([
+        return response()->json([
             'status'   => true,
             'messages' => 'Collection Journal all today data',
             'journals' => JournalResource::collection($this->journalInterface->getAllJournalTodayByTeacherId($teacherId)),

@@ -66,6 +66,12 @@ class JournalRepository extends BaseRepository implements JournalInterface
             ->whereDate('created_at', Carbon::today())
             ->get();
     }
+    public function countJournalToDay()
+    {
+        return $this->model->query()
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+    }
     public function getAllJournalTodayByTeacherId($teacherId)
     {
         $teacher = Teacher::with('monitoredStudents')->findOrFail($teacherId);

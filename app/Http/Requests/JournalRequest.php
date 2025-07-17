@@ -29,22 +29,6 @@ class JournalRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            'title.required'       => 'Judul wajib diisi.',
-            'title.min'            => 'Judul minimal harus terdiri dari 5 karakter.',
-            'title.max'            => 'Judul maksimal terdiri dari 50 karakter.',
-
-            'image.required'       => 'Gambar wajib diunggah.',
-            'image.image'          => 'File harus berupa gambar.',
-            'image.mimes'          => 'Format gambar harus jpeg, png, jpg, gif, atau svg.',
-            'image.max'            => 'Ukuran gambar maksimal 2MB.',
-
-            'description.required' => 'Deskripsi wajib diisi.',
-            'description.min'      => 'Deskripsi minimal harus terdiri dari 150 karakter.',
-            'description.max'      => 'Deskripsi maksimal terdiri dari 500 karakter.',
-        ];
-    }
+    
 
 }

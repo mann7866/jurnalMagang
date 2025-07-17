@@ -52,6 +52,8 @@ class StudentRepository extends BaseRepository implements StudentInterface
         return $this->model->query()->findOrFail($id);
     }
 
-    
+    public function count(){
+        return $this->model->query()->count();
+    }
 
 }

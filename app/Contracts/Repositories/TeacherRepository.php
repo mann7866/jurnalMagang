@@ -51,6 +51,7 @@ class TeacherRepository extends BaseRepository implements TeacherInterface
     public function find(mixed $id): mixed{
         return $this->model->query()->findOrFail($id);
     }
-
-
+    public function count(){
+        return $this->model->query()->count();
+    }
 }

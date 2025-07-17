@@ -8,23 +8,40 @@ use App\Http\Resources\DetailUserResource;
 use App\Contracts\Interfaces\JournalInterface;
 use App\Contracts\Interfaces\StudentInterface;
 use App\Contracts\Interfaces\TeacherInterface;
+use App\Services\MonitoredService;
 
 class MonitoredController extends Controller
 {
     private TeacherInterface $teacherInterface;
     private StudentInterface $studentInterface;
     private JournalInterface $journalInterface;
+    private MonitoredService $monitoredService;
 
     public function __construct(
         TeacherInterface $teacherInterface,
         StudentInterface $studentInterface,
         JournalInterface $journalInterface,
+        MonitoredService $monitoredService,
     ) {
         $this->teacherInterface = $teacherInterface;
         $this->studentInterface = $studentInterface;
         $this->journalInterface = $journalInterface;
+        $this->monitoredService = $monitoredService;
     }
 
+    public function dashboard(){
+
+        $data = $this->monitoredService->prepareDataForAdmin();
+        return response()->json([
+            'status'   => true,
+            'messages' => 'Collection Teachers all data',
+            'data' => [
+                'totalTeacher' => $data['totalTeacher'],
+                'totalStudent' => $data['totalStudent'],
+                'totalJournalToday' => $data['totalJournalToday'],
+            ],
+        ]);
+    }
     public function getMonitoredTeachers()
     {
         return response()->json([

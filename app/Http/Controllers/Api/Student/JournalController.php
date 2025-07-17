@@ -24,6 +24,25 @@ class JournalController extends Controller
         $this->journalService   = $journalService;
     }
 
+    public function dashboard()
+    {
+        try {
+            $studentId = Auth::user()->student->id;
+            $journal   = $this->journalInterface->getStudentJournalById($studentId);
+            $totalJournal = $journal->count();
+            return response()->json([
+                'status'   => true,
+                'messages' => 'Collect data journal',
+                'data'     => $totalJournal,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'   => false,
+                'messages' => 'error',
+                'data'     => $e->getMessage(),
+            ], 500);
+        }
+    }
     public function getData()
     {
         try {
