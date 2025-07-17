@@ -56,7 +56,7 @@ class JournalRepository extends BaseRepository implements JournalInterface
 
     public function getStudentJournalById(mixed $id)
     {
-        return $this->model->query()->where('student_id', $id)->get();
+        return $this->model->query()->latest()->where('student_id', $id)->get();
     }
 
     public function getAllJournalToDay()
